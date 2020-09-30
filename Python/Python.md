@@ -1012,6 +1012,9 @@ Até pagina: 190
 
 ## 30/09/2020
 
+
+Pagina atual: 191
+
 ### Listas de Compreensão
 
 A forma mais simples de uma lista por compreensão é:
@@ -1455,12 +1458,317 @@ Pagina atual: 343
 
 ### Complementos - Capitulo 10
 
+#### Cadeias de carateres de comentarios
+
+Todas as cadeias de carateres que aparecem associadas a um objeto antes de qualquer codigo executavel são conhecidas por cadeia de carateres de documentação e sao tratadas automaticamente pelos sistemas de documentação, como o *PyDoc*. Por exemplo, imaginemos que temos o seguinte ficheiro:
+
+    """ 
+    Para testar a documentação.
+
+    minha_doc.py
+    """
+
+    __author__ = "Ernesto Costa"
+
+    __version__ = "June 2013"
+
+    def toto(n):
+        """Imprime o dobro de n."""
+        print(2 * n)
+
+    if __name__ == "__main__":
+        toto(5)
+
+Suponhamos que lançamos o interpretador de Python e importamos o módulo. Veja-se o que acontece
+
+    >>> import minha_doc
+    >>> print(minha_doc.__doc__)
+
+    Para testar a documentação.
+
+    minha_doc.py
+    >>> help(minha_doc)
+    Help on module minha_doc:
+
+    NAME
+        minha_doc - Para testar a documentação
+
+    DESCRIPTION
+        minha_doc.py
+
+    FUNCTIONS
+        toto(n)
+            Imprime o dobro de n.
+
+    AUTHOR
+        Ernesto Costa
+
+    FILE
+        /Users/ernestojfcosta/minha_doc.py
+
+    >>> print(minha_doc.toto.__doc__)
+        Imprime o dobro de n
+
+O comentario associado ao ficheiro está guardado no atributo __doc__. Ao usarmos o comando *help()*, chamamos automaticamente a ferramenta *PyDoc*, que lê o ficheiro, extrai dele informação relevante e apresenta-se de modo organizado.
+
+#### Ambiente e alcance das variaveis
+
+É preciso saber, sempre que encontramos um nome, a que objeto se refere e quais os seus atributos. Os nomes existentes encontram-se agrupados em *espaços de nomes*. Existem um espaço de nomes no qual se encontram os nomes dos objetos predefinidos pelo sistema, denominado *builtins*. São também criados espaços de nomes quando importamos um módulos ou quando chamamos uma definição. Existe uma relação *hierarquica* entre estas três categorias de espaços de nomes.
+
+##### Modo Interativo
+
+O nome designa um módulo cujos atributos podemos inspecionar graças ao comando *dir(__builtins__)
+
+#### Declaração Global
+
+Se quisermos alterar a variavel através de uma atribuição, mas mantendoa globalmente, temos que declarar que se refere a uma variavel global
+
+        lista = [1,2,3]
+        def toto(x):
+            global lista # Lista é global
+            lista = x
+            print(lista)
+        toto(5) # ---> 5 
+        print(lista) # --->5!
+
+Executando o código, verificamos que a alteração foi feita na variavel global.
+
+#### Decorador
+
+Define-se um decorador através do uso do caráter @ seguido do nome do decorador. Imediatamente a seguir aparece a definição que vai ser objeto de transformação
+
+Queremos um programa que, quando ativado, mostre como saida a chamada e o respetivo resultado. 
+
+    def tracer(func):
+        def wrapper(x):
+            print(fun.__name__, '(', x, ') = ', end=' ')
+            return func(x)
+        return wrapper
+
+    @tracer
+    def cube(x):
+        return x**3
+
+    if __name__ == '__main__':
+        print(cube(3))
+
+#### Módulos
+
+Os modulos para serem utilizados, têm de ser importados, seja pelo utilizador, seja por outro modulo. A importação é feita, como já sabemos, de acordo com a sintaxe:
+
+    import modulo
+
+Envolve fundamentalmente três passos:
+
+    1. Procura
+    2. Compilação (eventualmente)
+    3. Execução
+
+Ficheiro importa.py
+
+    x = 'ah!ah!'
+
+Ficheiro outro_ficheiro.py
+
+    >>>import importa
+    >>>importa.x
+    'ah!ah!'
+
+Para importar um metodo especifico do modulo
+
+    from modulo import nome_1, nome_2, ...
+
+Existe uma variante de importação que podemos usar quando o nome do modulo é muito extenso, ou quando queremos evitar um conflito com o nome existente no programa, ou ainda quando temos de percorrer diretorias até chegar ao modulo.
+
+    import nome_grande_do_modulo as nome_p
+    from modulo import nome_grande_do_modulo as nome_p
+
+#### Uso e execução de modulos
+
+Os modulos podem ter uma dupla utilização: serem importados, como foi descrito, para um programa usar os metodos que disponibilizam, ou serem executados como se fossem um programa. Podemos escrever modulos quer permitam esta dupla utilização através de um teste ao seu atributo __name__: quando executado, este atributo é igual a __main__; quando importado, o atributo __nome__ é igual ao nome do módulo.
+
+    """ Dupla Utilização de um modulo"""
+    print("o meu nome é: ", __name__)
+    print("e fui importado")
+
+    if __name__ == "__main__":
+        print("... e executado!")
+
+Quando importamos o modulo:
+
+    >>> import teste # Importar o modulo
+    O meu nome é: teste
+    e fui importado
+    >>> # executa o modulo
+    O meu nome é: main
+    e fui importado
+    ... e executado!
+
+#### Funções - Numero variavel de argumentos
+
+Quando não sabemos, no momento da execução, quantos argumentos vamos ter
+
+    def my_max(*valores):
+    """
+    Qual é o maximo de um numero de valores?
+    """
+    if not valores:
+        return None
+    else:
+        maior = valores[0]
+        for val in valores[1:]:
+            if val > maior:
+                maior = val
+        return maior
+
+A sintaxe foi aumentada prefixando o nome do parâmetro com um *asterisco*. Agora todos os valores são juntos num tuplo e o respetivo objeto é associado ao (nome do) parametro
+
+    >>> print(my_max(1,8,4,10,7,12,7))
+    12
+    >>> print(my_max(1,8,4))
+    8
 
 
+| Sintaxe | Significao |
+|---|---|
+|def func(nome)| Posição ou nome |
+|def fun(nome=valor)| Por defeito|
+|def fun(*nome)| Junta argumentos posicionais num tuplo|
+|def fun(**nome)| Junta argumentos com nome num dicionario|
+|def fun(*args, nome)| Por nome na chamada|
+|func(valor)| Posição|
+|func(nome=valor)| Nome|
+|func(*sequencia)|Individualmente por posição|
+|func(**dict)| Individualmente oomo argumento por nome|
+
+##### Funções Geradoras
+
+Trata-se de funções em que aparecea instrução yield em vez de return. Quando a instrução yield é executada, é devolvido imediatamente um valor e a computação fica suspensa, com o contexto salvaguardado, até nova invocação que faça continuar o programa na instrução a seguir á yield
+
+    def fibonacci():
+        a,b = 0,1
+        while True:
+            yield b
+            a,b = b, a+b
+
+    if __name__ == '__main__':
+        fib = fibonacci()
+        print(next(fib)) # 1
+        print(next(fib)) # 1
+        print(next(fib)) # 2
+        print([next(fib) for i in range(10)]) # [3,5,8,13,21,34,55,89,144,233]
+
+##### Funções Anonimas - lambda
+
+    lambda <parametros formais> : <expressão>
+
+O que caracteriza fundamentalmente as funções *lambda* é o facto de nao terem um nome associado (serem anonimas). Existe a limitação de o corpo da função ser uma expressão, não podendo conter instruções de controlo ou a definição de objetos locais que nao os parametros.
+
+    >>>(lambda x: x**2)(2)
+    4
+    >>> [(lambda x: x**2)(i) for i in range(4)]
+    [0,1,4,9]
+    >>> (lambda x,y: x if x < y else y)
 
 
+Até pagina: 408
 
+## 30/09/2020
 
+Pagina atual: 409
+
+### Desenvolvimento - Capitulo 11
+
+Objetivos:
+
+* Rever diferentes asperos da linguagem Python
+* Introduzir noções básicas de complexidade algoritmica
+* Discutir diferentes maneiras de abordar o problema da correção dos programas
+* Apresentar principios de construção de programas
+
+#### Complexidade
+
+Existem varias classes de complexidade, que apresentamos por ordem crescente do custo computacional:
+
+1. O(1): tempo de execução constante
+2. O(log(n)): tempo de execução logaritmico
+3. O(n): tempo de execução linear
+4. O(n * log(n)): tempo de execução log-linear
+5. O(n**k): tempo de execução polinomial
+6. O(k**n): tempo de execução exponencial
+
+#### Correcção
+
+Vamos apresentar como ficarmos tranquilos em relação á correção de um programa
+
+##### Proteções e testes
+
+Uso de exceções:
+
+    def divide(x,y):
+        try:
+            res = x/y
+        except ZeroDivisionError:
+            print("divisao por zero...")
+            return -1
+        else:
+            return res
+
+Asserções:
+
+    def fact_rec(x):
+        assert x >=0, "Oops, número negativo..."
+        if x == 0:
+            return 1
+        else:
+            return x * fact_rec(x-1)
+
+A quem defenda que os testes tem que ser escritos antes do nosso codigo, isto é, advogam uma metodologia de programação guiada pelos testes
+
+    def media(lista):
+        return [sum(lista[:i+1])/len(lista[:i+1]) for i in range(len(lista))]
+    
+    if __name__ == "__main__":
+        assert media([1,2,3,4,5]) == [1,1.5,2,2.5,3], "Falhou teste 1!"
+        assert media([]) == [], "Falhou teste 2!"
+
+Uma questão que se coloca neste tipo de abordagem, além de determinar os casos a testar, é saber onde devem ser colocadas as asserções. Uma Solução consistirá em associar todos os testes numa definição que depois é chamada.
+
+    def media(lista):
+        return [sum(lista[:i+1])/len(lista[:i+1]) for i in range(len(lista))]
+    
+    def teste_media():
+        assert media([1,2,3,4,5]) == [1,1.5,2,2.5,3], "Falhou teste 1!"
+        assert media([]) == [], "Falhou teste 2!"
+
+    if __name__ == "__main__":
+        test_media()
+
+##### DOCTEST
+
+Modulo *doctest*, permite testar o codigo lido e executar o codigo que encontrar na cadeia de carateres que funciona como documentação
+
+    def nova_media(lista):
+        """
+        A partir de uma lista de numeros fabrica outra lista em que na posição i estará a soma de todos os numeros na lista entre a posição inicial e a posição i, inclusive.
+        >>> nova_media([1,2,3,4,5])
+        [1.0, 1.5, 2.0, 2.5, 3.0]
+        >>> nova_media([])
+        []
+        """
+        return [sum(lista[:i+1])/len(lista[:i+1]) for i in range(len(lista))]
+    
+    if __name__ == "__main__":
+        import doctest
+        doctest.testmod()
+
+Até pagina: 452
+
+## 01/10/2020
+
+Pagina atual: 455
+
+### Programação Orientada aos Objetos; Tipos e Classes - Capitulo 12
 
 
 
