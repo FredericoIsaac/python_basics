@@ -30,3 +30,51 @@ Com este mês a estudar os fundamentos espero poder chegar ao final e sentir que
 https://automatetheboringstuff.com/
 
 https://www.fca.pt/pt/catalogo/informatica/programacao/programacao-em-python/
+
+# Youtube
+
+https://www.youtube.com/watch?v=DhdOKh5Issw&list=PLWKjhJtqVAbkmRvnFmOd4KhDdlK1oIq23&index=3&ab_channel=freeCodeCamp.org
+
+
+# Youtube lições
+
+Para imprimir com espaço personalizado entre colunas e lidar com try e except 
+
+    def time_table():
+        try:
+            x = int(input("Introduz um numero: "))
+            for row in range(x):
+                for column in range(x):
+                    print(f"{row*col:2}", end = " ")
+                print()
+        except ValueError:
+            print("Oops, Please enter a number: ")
+        q = input("Do you want another table? y/n").lower()
+        if q[0] == "n":
+            break
+
+    time_table()
+
+
+Conditions with while loop and else:
+
+    while x > 10:
+        print("x é maior que 10")
+        x = int(input("introduz um numero: "))
+    else:
+        print("Boa introduziste um numero menor que 10")
+
+Enumerate que começa onde quiseres
+
+    names = ["joao","andre","sara"]
+    for x in enumerate(names, start=1):
+        print(x)
+
+    # Se quisermos imprimir isto sem ser num tuple
+    for num, name in enumerate(names, start=1):
+        print(num, name)
+
+Strip() method
+
+Elimina os espaços em branco numa string
+
