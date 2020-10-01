@@ -1770,12 +1770,436 @@ Pagina atual: 455
 
 ### Programação Orientada aos Objetos; Tipos e Classes - Capitulo 12
 
+Já sabemos que os objetos, em programação, têm atributos. Por exemplo, identidade, valor e tipo. Assim ,5 e 7 são dois objetos numéricos, de valor 5 e 7, respetivamente, com uma identidade propria (a zona da memoria na qual estao guardados) e um tipo (inteiro neste caso).
+
+Quando manipulamos o objeto, é como se estivessemos a completar ou a modificar o nosso formulario. A forma de o fazer é através de funções, que por serem especificas dos objetos do tipo, recebem o nome de métodos.
+
+#### Criação de novos tipos
+
+Admitamos que queriamos definir um novo tipo, o dos numeros racionais, isto é, o conjunto dos numeros que se podem escrever como o quociente de dois inteiros
+
+    class Racional:
+        pass
+
+    if __name__ == '__main__':
+        frac_1 = Racional()
+        print(frac_1)
+        print(id(frac_1))
+        print(type(frac_1))
+
+A definição de uma classe obriga ao uso da palavra reservada *class*. Assim quando criamos uma *instancia* da classe (frac_1 = Racional()), um objeto do tipo *racional*, pouco podemos fazer com o objeto.
+
+Para tal, vamos definir uma função no interior da definição da classe para esse efeito. A estas definições chamamos *métodos*.
+
+    class Racional:
+        def cria_frac(self, numerador, denominador):
+            self.numerador = numerador
+            self.denominador = denominador
+
+    if __name__ == '__main__':
+        frac_1 = Racional()
+        frac_1.cria_frac(3, 5)
+        print(frac_1)
+        print(id(frac_1))
+        print(type(frac_1))
+        print(frac_1.numerador)
+
+Chamamos *self*, este argumento é usado para referir o objeto que esta a ser construido. Dada a sua natureza e função, tem de ser sempre o primeiro objeto da lista de todos os métodos definidos na classe.
+
+A solução apresentada ainda não satisfaz, pois é natural que se possa instanciar os atributos do objeto aquando da sua criação. Para tal, vamos recorrer a um *metodo especial* que cumpre a função de construtor do objeto. O seu nome, nesta e em todas as classes, é __init__
+
+    class Racional:
+        def __init__(self, numerador, denominador=1):
+            self.numerador = numerador
+            self.denominador = denominador
+
+        def __str__(self):
+            return "%d/%d" % (self.numerador, self.denominador)
+
+        def __mul__(self, outro):
+            novo_numerador = self.numerador * outro.numerador
+            novo_denominador = self.denominador * outro.denominador
+            return Racional(novo_numerador, novo_denominador)
+
+    if __name__ == '__main__':
+        frac_1 = Racional(3, 5)
+        print(frac_1)
+        print(id(frac_1))
+        print(type(frac_1))
+        print(frac_1.numerador)
+
+#### Tipos de dados abstratos
+
+Para dominar a complexidade inerente à programação dispomos de dois principios bastante poderosos: *decomposição* e *abstração*. A decomposição é usada na resolução de problemas quando dividimos um problema em subproblemas, em geral mais simples e que, por isso, podemos resolver com maior facilidade. Abstração significa ignorar detalhes. Isso acontece, como acabamos de constatar no exmeplo dos numeros racionais, quando definimos classes e isolamos a representação dos objetos do seu uso atraves dos metodos.
+
+Quando definimos uma classe atraves dos seus atributos e das operações que podemos efetuar com os objetos da classe sem fazermos referencia a implementação, dizemos que estamos a falar de tipos de dados abstratos.
+
+#### Stacks e aplicação
+
+Vamos ver como podemos resolver a questão de saber se numa dad exprressao linear os parenteses utilizados estao equilibrados. Uma forma simples de resovler este problema é por recurso a uma pilha: vamos lendo a expressão carater a carater, e, de cada vez que encontramos um parênteses de abertura, este é colocado na pilha. Cada vez que encontramos um parenteses de fecho, vamos analisar se etá emparelhado com um parenteses de abertura que devera estar no topo da pilha. caso esteja, é retirado do topo da pilha; caso nao esteja, a expressão esta mal formada, no que toca aos parenteses. Se depois de ler toda a expressão sem um erro a pilha estiver vazia, entao a expressao esta equilibrada
+
+    def parent_equilib(exp):
+        pilha = Stack()
+        for ch in exp:
+            if ch == "(" or ch == "[" or ch == "{":
+                pilha.push(ch)
+            elif ch == ")" or ch == "]" or ch == "}":
+                if pilha.is_empty():
+                    return False
+                else:
+                    if topo == emparelhado(ch, topo):
+                        return False
+                else:
+                    pass
+        return pilha.is_empty()
+
+    def emparelhado(ch_1, ch_2):
+        return (ch_1 == ")" and ch_2 == "(") or (ch_1 == "]" and ch_2 == "[") or (ch_1 == "}" and ch_2 == "{")
+
+#### Arvore Binaria
+
+    class EmptyAB(Exception):
+        pass
+
+    class ArvoreBinaria:
+        """
+        Uma arvore binaria ou é vazia (valor = None), ou tem uma raiz e duas subarvores binarias esquerda e direita.
+        A representação vai ser feita com base no conceito de nó, uma estrutura com três campos: um valor e dois ponteiros.
+        """
+
+        def __init__(self, valor=None):
+            if valor:
+                self.raiz = valor
+                self.esquerda = ArvoreBinaria()
+                self.direita = ArvoreBinaria()
+            else:
+                self.raiz = None
+
+        def obtem_raiz(self):
+            if self.raiz == None:
+                raise EmptyAB("ERRO: Arvore vazia!")
+            return self.raiz
+        
+        def obtem_esquerda(self):
+            if self.raiz == None:
+                raise EmptyAB("ERRO: Arvore vazia!")
+            return self.esquerda
+
+        def obtem_direita(self):
+            if self.raiz == None:
+                raise EmptyAB("ERRO: Arvore vazia!")
+            return self.direita
+
+        def folha(self):
+            if self.raiz:
+                return (self.obtem_esquerda().vazia()) and (self.obtem_direita().vazia())
+            return False
+        
+        def vazia(self):
+            return self.raiz == None
+
+        def muda_raiz(self, valor):
+            if self.raiz == None:
+                raise EmptyAB("ERRO: Arvore Vazia!")
+            self.raiz = valor
+
+        def muda_esquerda(self, abin):
+            if not isinstance(abin, ArvoreBinaria):
+                raise TypeError("Não é arvore binaria")
+            elif self.raiz == None:
+                raise EmptyAB("ERRO: Arvore Vazia")
+            else:
+                self.esquerda = abin
+
+        def muda_direita(self, abin):
+            if not isinstance(abin, ArvoreBinaria):
+                raise TypeError("Não é arvore binaria")
+            elif self.raiz == None:
+                raise EmptyAB("ERRO: Arvore Vazia")
+            else:
+                self.direita = abin
+
+        def insere_esq(self, valor):
+            if self.raiz == None:
+                raise EmptyAB("ERRO: Arvore Vazia!")
+            if self.esquerda == None:
+                self.esquerda = ArvoreBinaria(valor)
+            else:
+                temp = ArvoreBinaria(valor)
+                temp.esquerda = self.esquerda
+                self.esquerda = temp
+
+        def insere_dir(self, valor):
+            if self.raiz == None:
+                raise EmptyAB("ERRO: Arvore Vazia")
+            if self.direita == None:
+                self.direita = ArvoreBinaria(valor)
+            else:
+                temp = ArvoreBinaria(valor)
+                temp.direita = self.direita
+                self.direita = temp
+
+        def __str__(self, nivel=0):
+            if self.raiz:
+                ret = "\t" * nivel + str(self.raiz) + "\n"
+                for filho in [self.direita, self.esquerda]:
+                    if filho:
+                        ret += filho.__str__(nivel + 1)
+                return ret
+            else:
+                return ""
+
+    def altura(arv):
+        if arv.vazia():
+            return 0
+        elif arv.folha():
+            return 1
+        else:
+            return 1 + max(altura(arv.obtem_esquerda()), altura(arv.obtem_direita()))
 
 
+    def esta_em(no, arv):
+        if arv.vazia():
+            return False
+        elif arv.obtem_raiz() == no:
+            return True
+        else:
+            return esta_em(no, arv.obtem_esquerda()) or esta_em(no, arv.obtem_direita)
 
 
+Até pagina: 488
+
+## 01/10/2020
+
+Pagina atual: 489
+
+### Programação Orientada aos Objetos - Capitulo 13
+
+#### Herança
+
+    class PessoaEscola(object): # tambem poderia ser class PessoaEscola:
+        def __init__(self, numero, nome):
+            self._numero = numero
+            self._nome = nome
+
+        def obtem_numero(self):
+            return self._numero
+
+        def obtem_nome(self):
+            return self._nome
+
+    class Aluno(PessoaEscola):
+        pass
+
+    # Como se consta temos que colocar no caeçalho da definição de uma classe o nome da sua superclasse.
+
+    class Funcionario(PessoaEscola):
+        def __init__(self, numero, nome, salario):
+            super().__init__(numero, nome)
+            self._salario = salario
+
+        def obtem_salario(self):
+            return self._salario
+
+Até pagina: 534
+
+## 01/10/2020
+
+Pagina atual: 535
+
+### Interfaces Graficas com o Utilizador (GUI) - Capitulo 14
+
+    from tkinter import * # importa o módulo
+
+    raiz = Tk() # cria a janela principal
+    raiz.title("A minha primeira janela")
+    raiz.geometry("400x100")
+
+    # Label é uma componente que nos permite mostrar texto
+    # Cria e posiciona uma Frame
+    quadro = Frame(raiz)
+    quadro.pack()
+
+    etiqueta = Label(quadro, text="ola Mundo")
+    fonte = ("helvetica",24,"bold")
+
+    # Existem varios aspetos dos elementos que podem ser configurados usando o método configure
+    etiqueta.configure(bg="red", fg="green")
+    etiqueta.configure(font=fonte, height=3, width=15)
+    """
+    Para a etiqueta acompanhar o redimensionamento da janela principal podemos usar duas opções do gestor de posicionamentos *pack: expand e fill*
+    A primeira se for igual a Yes, vai permitir que a etiqueta se mantenha centrada mesmo quando redimensionamos o seu contentor
+    A segunda permite redimensionar a etiqueta de modo a que ocupe mais espaço ao longo do eixo dos X (fill=x), do eixo dos Y (fill=y) ou de ambos:
+    etiqueta.pack(expand=YES, fill=BOTH)
+    """
+    etiqueta.pack()
+
+    raiz.mainloop() # chama o ciclo de gestao de eventos
+
+Entry é o elemento mais simples para introduzir dados, embora também possa ser usado para mostrar informação.
+
+    from tkinter import * # importa o módulo
+
+    raiz = Tk() # cria a janela principal
+    raiz.title("Entry")
+
+    etiqueta = Label(raiz, text="Nome: ")
+    etiqueta.pack(side=LEFT)
+
+    nome_entrada = StringVar()
+    nome_entrada.set("Nome")
+
+    nome = Entry(raiz, textvariable=nome_entrada)
+    nome.pack(side=LEFT)
 
 
+    raiz.mainloop() # chama o ciclo de gestao de eventos
+
+Se pretendermos introduzir texto que pode ocupar mais do 1 linha, em que a fonte pode variar ao longo desse mesmo text, entao o elemento *Text* deve ser a nossa escolha
+
+    from tkinter import * # importa o módulo
+
+    raiz = Tk() # cria a janela principal
+    raiz.title("Text")
+
+    quadro = Frame(raiz)
+    quadro.pack()
+
+    texto = Text(quadro, width=40, height=5, wrap=WORD) # nao quebra as palavras no final da linha opção wrap
+    texto.pack()
+
+    raiz.mainloop() # chama o ciclo de gestao de eventos
+
+Button, checkbutton e radiobutton
+
+    from tkinter import * # importa o módulo
+
+    raiz = Tk() # cria a janela principal
+    raiz.title("Dados")
+
+    quadro = Frame(raiz)
+    quadro.pack()
+
+    botao = Button(quadro, text="Lança Dado")
+    botao.pack()
+
+    botao_j = Checkbutton(quadro, text="Jazz")
+    botao_j.pack()
+
+    # Botao radio so pode estar selecionado um
+    var = IntVar()
+    botao_m = Radiobutton(quadro, text="Masculino", variable=var, value=1)
+    botao_m.pack()
+    botao_f = Radiobutton(quadro, text="Feminino", variable=var, value=2)
+    botao_f.pack()
+
+    raiz.mainloop() # chama o ciclo de gestao de eventos
+
+
+Existe um contentor muito importante, usado para aplicações de desenho, denomina-se de **Canvas**. Trata-se de ma tela na qual podemos colocar varios tipos de objetos, em particular formas geometricas e imagens.
+
+    from tkinter import * # importa o módulo
+
+    raiz = Tk() # cria a janela principal
+    raiz.title("Canvas")
+
+    tela = Canvas(raiz, width=200, height=200)
+    tela.pack()
+    tela.master.title("As de espadas")
+
+    imagem = PhotoImage(file="~/1s.gif")
+
+    id_imagem = tela.create_image(100, 100, image=imagem)
+
+    raiz.mainloop() # chama o ciclo de gestao de eventos
+
+tkinter é limitado relativamente ao tipo de imagens que pode manipular, a saber, formatos *GIf, PGM e PPM* usando *PhotoImage*, ou ainda o formato *XBM*, se usarmos *BitmapImage*.
+Ou usamos um programa que converta a imagem para um dos formatos suportados, ou instalamos o modulo *PIL* e usamos o seu método *PhotoImage*.
+
+    from tkinter import * # importa o módulo
+    from PIL.ImageTk import * # Vamos usar PhotoImage de PIL
+
+    raiz = Tk() # cria a janela principal
+    raiz.title("As de espadas")
+
+    tela = Canvas(raiz)
+    tela.pack()
+    tela.master.title("As de espadas")
+
+    imagem = PhotoImage(file="~/1s.jpg")
+
+    id = imagem.create_image(100, 100, image=imagem)
+
+    raiz.mainloop() # chama o ciclo de gestao de eventos
+
+Vamos mostrar como a combinação do uso de ações (callbacks) e de variaveis permite dar vida ao codigo.
+
+    from tkinter import * # importa o módulo
+
+    raiz = Tk() # cria a janela principal
+    raiz.title("Contador")
+
+    quadro = Frame(raiz)
+    quadro.pack()
+
+    conta = IntVar()
+    conta.set(0)
+
+    def inc_contador():
+        conta.set(conta.get() + 1)
+
+    def dec_contador():
+        conta.set(conta.get() - 1)
+
+    def limpa_contador():
+        conta.set(0)
+
+    etiqueta = Label(quadro, textvariable=conta)
+    etiqueta.pack()
+
+    botao_inc = Button(quadro, text="Incrementa", comand=inc_contador)
+    botao_inc.pack(side=LEFT)
+
+    botao_dec = Button(quadro, text="Decrementa", comand=dec_contador)
+    botao_dec.pack(side=LEFT)
+
+    botao_limpa = Button(quadro, text="Limpa", comand= limpa_contador)
+    botao_limpa.pack(side=LEFT)
+
+    raiz.mainloop() # chama o ciclo de gestao de eventos
+
+Com *tkinter* também podemos receber varios tipos de mensagens graças ao modulo *messagebox*. Eis um exemplo de mensagem de erro ao tentarmos decrementar o nosso contador quando este vale zero.
+
+    from tkinter import * # importa o módulo
+    from tkinter.messagebox import *
+
+    raiz = Tk() # cria a janela principal
+    raiz.title("messagebox")
+
+    quadro = Frame(raiz)
+    quadro.pack()
+
+    conta = IntVar()
+    conta.set(0)
+
+    mensagem = "Impossivel decrementar!"
+
+    def contador(valor):
+        conta.set(valor)
+
+    etiqueta = Label(quadro, textvariable=conta)
+    etiqueta.pack()
+
+    botao_inc = Button(quadro, text="Incrementa", comand=(lambda : contador(conta.get() + 1)))
+    botao_inc.pack(side=LEFT)
+
+    botao_dec = Button(quadro, text="Decrementa", comand=(lambda : contador(conta.get() - 1) if (conta.get() > 0) else showerror("Decrementa", mensagem)))
+    botao_dec.pack(side=LEFT)
+
+    botao_limpa = Button(quadro, text="Limpa", comand=(lambda : contador(0)))
+    botao_limpa.pack(side=LEFT)
+
+    raiz.mainloop() # chama o ciclo de gestao de eventos
 
 # Teste cohecimentos
 
