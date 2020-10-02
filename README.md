@@ -36,9 +36,11 @@ https://www.fca.pt/pt/catalogo/informatica/programacao/programacao-em-python/
 https://www.youtube.com/watch?v=DhdOKh5Issw&list=PLWKjhJtqVAbkmRvnFmOd4KhDdlK1oIq23&index=3&ab_channel=freeCodeCamp.org
 
 
+
+
 # Youtube lições
 
-Para imprimir com espaço personalizado entre colunas e lidar com try e except 
+## Para imprimir com espaço personalizado entre colunas e lidar com try e except 
 
     def time_table():
         try:
@@ -56,7 +58,7 @@ Para imprimir com espaço personalizado entre colunas e lidar com try e except
     time_table()
 
 
-Conditions with while loop and else:
+## Conditions with while loop and else:
 
     while x > 10:
         print("x é maior que 10")
@@ -64,7 +66,7 @@ Conditions with while loop and else:
     else:
         print("Boa introduziste um numero menor que 10")
 
-Enumerate que começa onde quiseres
+## Enumerate que começa onde quiseres
 
     names = ["joao","andre","sara"]
     for x in enumerate(names, start=1):
@@ -74,7 +76,58 @@ Enumerate que começa onde quiseres
     for num, name in enumerate(names, start=1):
         print(num, name)
 
-Strip() method
 
-Elimina os espaços em branco numa string
+## Strip() method
 
+    Elimina os espaços em branco numa string
+
+## Join method
+
+    from string import ascii_lowercase as lower
+
+    abc = ""
+    abc = "x".join(lower)
+    abc += "x"
+    # abc = "a*,b*,c*,...,z*"
+
+## List compreenshion and dictionary
+
+    students = ["steve", "jonh", "adam"]
+
+    s_dict = {student[0].upper(): student for student in students}
+    # {"S": "steve", "J": "john", "A": "adam"}
+
+## Scope - Local -> global -> built-in (por ordem de prioridade)
+
+    from math import pi
+
+    pi = 3.14
+
+    def area(r):
+        global pi
+        pi = 3.14159
+        return pi*r**2
+
+    print(area(3))
+
+    # nonlocal (enclosing, enclosed)
+    def exp(n):
+        n = 1
+        def num(x):
+            nonlocal n
+            return x**n
+        return num
+
+    square(2) # 2
+
+## Decorators
+
+    def cube(func):
+        def wrapper(arg):
+            return func(arg)**3
+        return wrapper
+    
+    @cube
+    def num(x):
+        return x
+        
