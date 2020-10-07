@@ -131,3 +131,71 @@ https://www.youtube.com/watch?v=DhdOKh5Issw&list=PLWKjhJtqVAbkmRvnFmOd4KhDdlK1oI
     def num(x):
         return x
         
+
+## Exceptions
+
+    try:
+        a = 5 / 0
+    except Exception as e:
+        print(e)
+
+    # division by zero
+
+## finally
+
+runs everytime even if happen an exception
+
+    try:
+        a = 5 / 0 
+        b = a + 4
+    except Exception as e:
+        print(e)
+    except TypeError as e:
+        print(e)
+    else:
+        print("everything is fine")
+    finally:
+        print("cleaning up...")
+
+    # division by zero
+    # cleaning up...
+    
+## JSON
+
+    import json
+
+    person = {"name" : "Jonh", "age": 30}
+
+    # Create a json from the dict
+    personJSON = json.dumps(person, indent=4, sort_keys=True)
+
+    # Write a JSON file
+
+    with open("person.json", "w") as file:
+        json.dump(person, file, indent=4)
+
+    # Creates a dict form the json
+    person = json.loads(personJSON)
+
+    # Read a JSON file
+
+    with open("person.json", "r") as file:
+        person = json.loads(file)
+
+## Generators example aplication
+
+    def fibonacci(limit):
+        # 0 1 1 2 3 5 8 13 ...
+        a, b = 0, 1
+        while a < limit:
+            yield a
+            a, b = b, a + b
+
+    fib = fibonacci(30)
+    for i in fib:
+        print(i)
+
+    # compreenhsion generators
+    mygenerator = (i for i in range(100) if % 2 == 0)
+
+
