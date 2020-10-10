@@ -199,4 +199,3 @@ runs everytime even if happen an exception
     mygenerator = (i for i in range(100) if % 2 == 0)
 
 
-
